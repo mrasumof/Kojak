@@ -1,0 +1,19 @@
+#page-container {
+	width: 1200px;
+}
+
+#dashboard {
+        background: OldLace;
+        width: 450px;
+        height: 400px;
+	float: right;
+}
+
+#scatterplot {
+	background: MintCream;
+	height: 400px;
+}
+
+#wordcloud {
+        background: MintRose;
+        height: 280px;
