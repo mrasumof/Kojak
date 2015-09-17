@@ -16,18 +16,51 @@
 	
         <style type="text/css" media="all">@import "/static/master.css"</style>
 </head>
+<style>
+.d3-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+/* Style northward tooltips differently */
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}
+</style>
 
 <body>
 
    <div id="page-container">
         <script src="http://d3js.org/d3.v3.min.js"></script>
 	<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+	<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 	
 	<div id="dashboard">
 		<form action="/articles" id="form">
-  			From Year:<input type="number" name="from_year" value=2012>
+			<br><br><br><br>
+			<p><strong>Querie Parameters</strong></p>
+  			From Year:<input type="number" name="from_year" value=2014>
   			<br>
-  			To Year:<input type="number" name="to_year" value=2015>
+  			To Year  :<input type="number" name="to_year" value=2014>
 			<br>
 
 			<table style="width:100%">
@@ -88,7 +121,26 @@
 		                     .attr("font-size", "16px")
 				     .attr("fill", "black");
 
- 		scatterplotsvg.append("rect")
+		var margin = {top: 25, right: 30, bottom: 25, left: 50},
+		    width = 700 - margin.left - margin.right,
+    		    height = 550 - margin.top - margin.bottom;
+
+		var tip = d3.tip()
+  			    .attr('class', 'd3-tip')
+  			    .offset([-10, 0])
+  			    .html(function(d) {
+    				return "<span style='color:red'>Article:</span> <span style='color:white'>" + d['link'] + "</span>";
+			       })
+ 	
+		var svg = d3.select("body").append("svg")
+   			    .attr("width", width + margin.left + margin.right)
+   			    .attr("height", height + margin.top + margin.bottom)
+ 			    .append("g")
+   			    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+		
+		svg.call(tip);
+ 		
+		scatterplotsvg.append("rect")
 			      .attr('x', 30)
          	 	      .attr('y', 25)
         	 	      .attr('width',700)
@@ -257,7 +309,9 @@
 			      .attr("r",3)
 			      .attr("cx", function(d) {return xScale(d['polarity'])})
 			      .attr("cy", function(d) {return yScale(d['subjectivity'])})
-			      .style("fill", function(d) {return colors[d['source_n']]});
+			      .style("fill", function(d) {return colors[d['source_n']]})
+      			      .on('mouseover', tip.show)
+      			      .on('mouseout', tip.hide);
 		}
 
 getData();
