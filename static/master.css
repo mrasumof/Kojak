@@ -11,9 +11,10 @@
 
 #scatterplot {
 	background: MintCream;
-	height: 400px;
+	height: 600px;
 }
 
-#wordcloud {
+#test {
         background: MintRose;
-        height: 280px;
+        height: 300px;
+}

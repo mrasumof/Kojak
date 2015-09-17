@@ -1,0 +1,267 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+	<title>Corruption-busters</title>
+	<meta http-equiv="Content-Language" content="en-us" />
+	
+	<meta http-equiv="imagetoolbar" content="no" />
+	<meta name="MSSmartTagsPreventParsing" content="true" />
+	
+	<meta name="description" content="Description" />
+	<meta name="keywords" content="Keywords" />
+	
+	<meta name="author" content="Enlighten Designs" />
+	
+        <style type="text/css" media="all">@import "/static/master.css"</style>
+</head>
+
+<body>
+
+   <div id="page-container">
+        <script src="http://d3js.org/d3.v3.min.js"></script>
+	<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+	
+	<div id="dashboard">
+		<form action="/articles" id="form">
+  			From Year:<input type="number" name="from_year" value=2012>
+  			<br>
+  			To Year:<input type="number" name="to_year" value=2015>
+			<br>
+
+			<table style="width:100%">
+			  <tr>
+    				<td>Clarin: <input type="checkbox" name="clarin" value="Clarin" checked></td>
+    				<td>La Nacion: <input type="checkbox" name="lanac" value="LaNacion" checked></td>
+    				<td>Pagina 12: <input type="checkbox" name="pag12" value="Pagina12" checked></td>
+  			  </tr>
+                          <tr>
+                                <td>Infobae: <input type="checkbox" name="infobae" value="Infobae" checked></td>
+                                <td>Tiempo Argentino: <input type="checkbox" name="tiema" value="TA" checked></td>
+                                <td>Ambito Financiero: <input type="checkbox" name="ambito" value="Ambito" checked></td>
+                          </tr>
+                          <tr>
+                                <td>Perfil: <input type="checkbox" name="perfil" value="Perfil" checked></td>
+			</table>
+			<input type="submit" value="Submit">
+		</form>
+	</div>
+		
+	<div id="scatterplot"></div>
+	<div id="test"</div>
+
+	<script>
+		$("#form").submit(function(event) {
+			// get values from the form fields
+			//getData(fPolarity=from_polarity,tPolarity=to_polarity,fSubject=from_subject,tSubject=to_subject); // becomes like getData(fromYear=1234, ...
+			// call getData (below) with the values as arguments
+			event.preventDefault();
+                        getData()
+		    });
+	
+		var scatterplotsvg = d3.select("#scatterplot")
+        	 		      .append("svg")
+		 		      .attr('width',750)
+		 		      .attr('height',600)
+				      .attr("font-family", "sans-serif")
+                                      .attr("font-size", "16px")
+                                      .attr("fill", "black");
+
+                var legendsvg = d3.select("#test")
+                                  .append("svg")
+                                  .attr('width',1000)
+                                  .attr('height',300);
+
+		var xScale = d3.scale.linear().domain([-1,1]).range([30, 700]);
+		var yScale = d3.scale.linear().domain([0,1]).range([25, 550]);
+	
+		var xAxis = d3.svg.axis().scale(xScale);
+                var yAxis = d3.svg.axis().scale(yScale);
+
+	        var colors = ["#2b8cbe","#31a354","#e34a33","#885677","#41b6c4","#feb24c","#252525"];
+                var paper  = ["Clarin", "La Nacion", "Pagina 12", "Tiempo Argentino", "Perfil", "Ambito Financiero", "Infobae"];
+
+		var text = legendsvg.append("text");
+		
+		var textLabels = text.attr("font-family", "sans-serif")
+		                     .attr("font-size", "16px")
+				     .attr("fill", "black");
+
+ 		scatterplotsvg.append("rect")
+			      .attr('x', 30)
+         	 	      .attr('y', 25)
+        	 	      .attr('width',700)
+        	 	      .attr('height',550)
+        	 	      .attr('fill','none')
+        		      .attr('stroke-width',2)
+        		      .attr('stroke','black')
+			      .append('g')
+			      .attr('id','xAxisG')
+			      .call(xAxis)
+                              .append('g')
+                              .attr('id','yAxisG')
+                              .call(yAxis)
+
+		scatterplotsvg.append("text")
+			      .text("Polarity")
+			      .attr("y",590)
+			      .attr("x",350)
+
+		scatterplotsvg.append("text")
+			      .text("+")
+			      .attr("x",695)
+			      .attr("y",590)
+                              .attr("font-size", "20px")
+                              .attr("fill", "green");
+
+                scatterplotsvg.append("text")
+                              .text("-")
+                              .attr("x",55)
+                              .attr("y",590)
+                              .attr("font-size", "20px")
+                              .attr("fill", "red");
+
+                scatterplotsvg.append("text")
+                              .text("Subjectivity") 
+			      .attr("transform","rotate(90)")
+                              .attr("x",250)
+                              .attr("y",-10)
+
+               scatterplotsvg.append("text")
+                              .text("+")
+                              .attr("x",15)
+                              .attr("y",45)
+                              .attr("font-size", "20px")
+                              .attr("fill", "green");
+
+                scatterplotsvg.append("text")
+                              .text("-")
+                              .attr("x",15)
+                              .attr("y",550)
+                              .attr("font-size", "20px")
+                              .attr("fill", "red");
+
+                legendsvg.append("circle")
+                         .attr('cx', 50)
+                         .attr('cy', 20)
+			 .attr('r',5)
+                         .style('fill',"#2b8cbe")
+
+		legendsvg.append("text")
+			  .text("Clarin")
+			  .attr("x",60)
+			  .attr("y",25)
+		
+		legendsvg.append("circle")
+                         .attr('cx', 50)
+                         .attr('cy', 40)
+                         .attr('r',5)
+                         .style('fill',"#31a354")
+
+                legendsvg.append("text")
+                          .text("La Nacion")
+                          .attr("x",60)
+                          .attr("y",45)
+
+                legendsvg.append("circle")
+                         .attr('cx', 200)
+                         .attr('cy', 20)
+                         .attr('r',5)         
+                         .style('fill',"#e34a33")
+
+                legendsvg.append("text")
+                          .text("Pagina 12")
+                          .attr("x",210)
+                          .attr("y",25)
+
+                legendsvg.append("circle")
+                         .attr('cx', 200)
+                         .attr('cy', 40)      
+                         .attr('r',5)
+                         .style('fill',"#885677")
+
+                legendsvg.append("text")
+                          .text("Tiempo Argentino")
+                          .attr("x",210)
+                          .attr("y",45)
+
+                legendsvg.append("circle")
+                         .attr('cx', 350)
+                         .attr('cy', 20)
+                         .attr('r',5)
+                         .style('fill',"#41b6c4")
+
+                legendsvg.append("text")
+                          .text("Perfil")
+                          .attr("x",360)
+                          .attr("y",25)
+
+                legendsvg.append("circle")
+                         .attr('cx', 350)
+                         .attr('cy', 40)
+                         .attr('r',5)
+                         .style('fill',"#feb24c")
+
+                legendsvg.append("text")
+                          .text("Ambito Financiero")
+                          .attr("x",360)
+                          .attr("y",45)
+
+                legendsvg.append("circle")
+                         .attr('cx', 500)
+                         .attr('cy', 20)
+                         .attr('r',5)
+                         .style('fill',"#252525")
+
+                legendsvg.append("text")
+                          .text("Infobae")
+                          .attr("x",510)
+                          .attr("y",25)
+
+     function getData(){
+	// modify this function to take arguments for the query
+        var from_year = $("input[name=from_year]").val();
+        var to_year = $("input[name=to_year]").val();
+	var checked_things = $("input:checked")
+	checked_things = checked_things.get();
+	checked_things = checked_things.map(function(y) {return $(y).val()});
+
+       $.ajax({
+         type: "POST",
+         contentType: "application/json; charset=utf-8",
+         url: "/articles",
+         dataType: "json",
+         async: true,
+         data : JSON.stringify({'from_year': from_year, 'to_year': to_year, 'checked_sources':checked_things}),
+
+         success: function (data) {
+//		console.log(data);
+//                $("#test").html("<p>"+data.result[1]+"</p>")
+		add_data_d3(data)
+			},
+         error: function (result) {},
+       		})
+     	      }
+	function add_data_d3(object){
+		//$("#test").html("<p>"+object.result[1]['source_n']+"</p>")
+                //$("#test").html("<p>"+cl+"</p>")
+
+		scatterplotsvg.selectAll("circle")
+			      .remove()
+
+	        scatterplotsvg.selectAll("circle")
+			      .data(object.result)
+			      .enter()
+			      .append("circle")
+			      .attr("r",3)
+			      .attr("cx", function(d) {return xScale(d['polarity'])})
+			      .attr("cy", function(d) {return yScale(d['subjectivity'])})
+			      .style("fill", function(d) {return colors[d['source_n']]});
+		}
+
+getData();
+ 
+	</script>
+</body>
+</html>
