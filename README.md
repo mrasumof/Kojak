@@ -15,3 +15,9 @@ Files included in repository:
 5. layout2.html: front-end piece. It includes HTML and d3 components
 
 6. thmbnails.py: generator of thumbnails to show (Work in Progress)
+
+7. Step 2 (folder): iPython notebooks to grab pure HTML articles and store them for later
+
+8. Step 3 (folder): iPython notebook to grab and parse articles
+
+9. static: contains master.css (styling sheet) for HTML
