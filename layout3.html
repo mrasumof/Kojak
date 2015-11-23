@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=UTF-8" />
+	<title>Corrupt-busters</title>
+	<meta http-equiv="Content-Language" content="en-us" />
+	
+	<meta http-equiv="imagetoolbar" content="no" />
+	<meta name="MSSmartTagsPreventParsing" content="true" />
+	
+	<meta name="description" content="Description" />
+	<meta name="keywords" content="Keywords" />
+	
+	<meta name="author" content="Enlighten Designs" />
+	
+	<style type="text/css" media="all">@import "css/master.css";</style>  <style type="text/css" media="all">@import "css/master.css";</style>
+</head>
+
+<body>
+
+   <div id="page-container">
+        <script src="http://d3js.org/d3.v3.min.js"></script>
+	<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+	
+	<div id="dashboard">
+		<form action="/articles" id="form">
+  			From Year:<input type="number" name="from_to_year" value=2012>
+  			<br>
+  			To Year:<input type="number" name="to_year" value=2015>
+			<br>
+			Local News Only:<input type="checkbox" name="local">
+			<br>
+			Polarity:<input type="range" name="polarity">
+			<br>
+			Subjectivity:<input type="range" name="subjectivity">
+			<br>
+			<table style="width:100%">
+			  <tr>
+    				<td>Clarin: <input type="checkbox" name="clarin"</td>
+    				<td>La Nacion: <input type="checkbox" name="ln"</td>
+    				<td>Pagina 12: <input type="checkbox" name="p12"</td>
+  			  </tr>
+                          <tr>
+                                <td>Infobae: <input type="checkbox" name="infobae"></td>
+                                <td>Tiempo Argentino: <input type="checkbox" name="ln"</td>
+                                <td>Ambito Financiero: <input type="checkbox" name="ambito"></td>
+                          </tr>
+                          <tr>
+                                <td>Perfil: <input type="checkbox" name="perfil"></td>
+			</table>
+			<input type="submit" value="Submit">
+		</form>
+	</div>
+	
+	<div id="scatterplot"></div>
+	<div id="wordcloud"></div>
+	<div id="test"</div>
+
+	<script>
+		$("#form").submit(function(event) {
+			getData();
+			event.preventDefault();
+		    });
+	
+		var scatterplotsvg = d3.select("#scatterplot")
+        	 		      .append("svg")
+		 		      .attr('width',750)
+		 		      .attr('height',400);
+
+		var wordcloudsvg = d3.select("#wordcloud")
+                		    .append("svg")
+                		    .attr('width',1100)
+                		    .attr('height',300);
+
+ 		scatterplotsvg.append("rect")
+			      .attr('x', 20)
+         	 	      .attr('y', 25)
+        	 	      .attr('width',700)
+        	 	      .attr('height',350)
+        	 	      .attr('fill','none')
+        		      .attr('stroke-width',2)
+        		      .attr('stroke','black')
+
+		wordcloudsvg.append("rect")
+        		    .attr('x', 10)
+        	 	    .attr('y', 10)   
+        	 	    .attr('width',1080)   
+        		    .attr('height',280)
+        	 	    .attr('rx',10)
+        		    .attr('ry',10)
+        		    .attr('fill','none')
+        		    .attr('stroke-width',3)
+        		    .attr('stroke','red')
+
+     function getData(){
+       $.ajax({
+         type: "GET",
+         contentType: "application/json; charset=utf-8",
+         url: "/articles",
+         dataType: "json",
+         async: true,
+         data: "{}",
+         success: function (data) { add_data() },
+         error: function (result) {},
+       		})
+     	      }
+
+	function add_data(){
+		d3.select("#scatterplot")
+		  .append('rect')
+		  .attr('x',100)
+		  .attr('y',100)
+		  .attr('width',100)
+		  .attr('height',100)
+		  .attr('fill','none')
+		  .attr('stroke','green')
+
+	</script>
+</body>
+</html>
